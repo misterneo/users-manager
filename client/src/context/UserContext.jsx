@@ -15,137 +15,99 @@ const UserContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        axios.get(BACKEND_URL)
-            .then(async res => {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+        const fetchUsers = async () => {
+            try {
+                const res = await axios.get(BACKEND_URL);
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 setUsers(res.data);
                 setUsersLoading(false);
-            })
-            .catch(err => {
+            } catch (err) {
                 console.log(err);
                 setUsersLoading(false);
-            })
+            }
+        };
+        fetchUsers();
     }, []);
 
     const addUser = async (e) => {
         e.preventDefault();
         setLoading(true);
 
-        if (e.target.password.value !== e.target.confirmPassword.value) {
-            console.log('passwords do not match');
+        const { name, email, password, confirmPassword } = e.target;
+
+        if (password.value !== confirmPassword.value) {
+            console.log("passwords do not match");
             setLoading(false);
             setShowError(true);
-            setError('Passwords do not match!');
-
+            setError("Passwords do not match!");
             return;
         }
 
-        // delay to simulate loading
-        await new Promise(resolve => setTimeout(resolve, 500));
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const newUser = {
-            name: e.target.name.value,
-            email: e.target.email.value,
-            password: e.target.password.value
-        }
+            const newUser = {
+                name: name.value,
+                email: email.value,
+                password: password.value,
+            };
 
-        axios.post(BACKEND_URL, newUser)
-            .then(res => {
-                if(res.data.errors) {
-                    console.log(res.data.errors);
-                    setShowError(true);
-                    setError(res.data.errors[0].message);
-                    setLoading(false);
-                    return;
-                }
+            const res = await axios.post(BACKEND_URL, newUser);
 
-                setUsers([...users, res.data]);
-                setLoading(false);
-                setShowModal(false);
-                // clear form
-                e.target.name.value = '';
-                e.target.email.value = '';
-                e.target.password.value = '';
-                e.target.confirmPassword.value = '';
-
-                window.Toast.fire({
-                    icon: 'success',
-                    title: 'User added successfully!'
-                });
-            })
-            .catch(err => {
-                console.log(err);
-                setLoading(false);
+            if (res.data.errors) {
+                console.log(res.data.errors);
                 setShowError(true);
+                setError(res.data.errors[0].message);
+                setLoading(false);
+                return;
+            }
+
+            setUsers([...users, res.data]);
+            setLoading(false);
+            setShowModal(false);
+            // clear form
+            name.value = "";
+            email.value = "";
+            password.value = "";
+            confirmPassword.value = "";
+
+            window.Toast.fire({
+                icon: "success",
+                title: "User added successfully!",
             });
-    }
+        } catch (err) {
+            console.log(err);
+            setLoading(false);
+            setShowError(true);
+        }
+    };
 
     const editUser = async (e, user) => {
         e.preventDefault();
         setLoading(true);
 
-        // delay to simulate loading
-        await new Promise(resolve => setTimeout(resolve, 500));
+        const { name, email, oldPassword, newPassword } = e.target;
 
-        if (e.target.oldPassword.value !== user.password) {
-            console.log('old password is incorrect');
-            setLoading(false);
-            setShowError(true);
-            setError('Old password is incorrect!');
-            return;
-        }
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const updatedUser = {
-            name: e.target.name.value,
-            email: e.target.email.value,
-            password: e.target.newPassword.value
-        }
-
-        axios.put(`${BACKEND_URL}/${user.id}`, updatedUser)
-            .then(res => {
-                if(res.data.errors) {
-                    console.log(res.data.errors);
-                    setShowError(true);
-                    setError(res.data.errors[0].message);
-                    setUsersLoading(false);
-                    return;
-                }
-
-                const updatedUsers = users.map(u => {
-                    if (u.id === user.id) {
-                        return {
-                            ...u, 
-                            "name": e.target.name.value, 
-                            "email": e.target.email.value,
-                            "password": e.target.newPassword.value
-                        };
-                    }
-                    return u;
-                });
-                setUsers(updatedUsers);
-                setLoading(false);
-                setShowEditModal(false);
-                // clear form
-                e.target.oldPassword.value = '';
-                e.target.newPassword.value = '';
-
-                window.Toast.fire({
-                    icon: 'success',
-                    title: 'User updated successfully!'
-                });
-            })
-            .catch(err => {
-                console.log(err);
+            if (oldPassword.value !== user.password) {
+                console.log("old password is incorrect");
                 setLoading(false);
                 setShowError(true);
-            });
+                setError("Old password is incorrect!");
+                return;
+            }
 
-    }
+            const updatedUser = {
+                name: name.value,
+                email: email.value,
+                password: newPassword.value,
+            };
 
-    const deleteUser = (id) => {
-        axios.delete(`${BACKEND_URL}/${id}`).then(res => {
+            const res = await axios.put(`${BACKEND_URL}/${user.id}`, updatedUser);
 
-            if(res.data.errors) {
+            if (res.data.errors) {
                 console.log(res.data.errors);
                 setShowError(true);
                 setError(res.data.errors[0].message);
@@ -153,27 +115,79 @@ const UserContextProvider = ({ children }) => {
                 return;
             }
 
-            setUsers(users.filter(user => user.id !== id));
+            const updatedUsers = users.map((u) =>
+                u.id === user.id
+                    ? { ...u, name: name.value, email: email.value, password: newPassword.value }
+                    : u
+            );
+            setUsers(updatedUsers);
+            setLoading(false);
+            setShowEditModal(false);
+            // clear form
+            oldPassword.value = "";
+            newPassword.value = "";
+
             window.Toast.fire({
-                icon: 'success',
-                title: 'User deleted successfully!'
+                icon: "success",
+                title: "User updated successfully!",
             });
-        }).catch(err => {
+        } catch (err) {
             console.log(err);
+            setLoading(false);
             setShowError(true);
-        });
-    }
+        }
+    };
+
+    const deleteUser = (id) => {
+        axios
+            .delete(`${BACKEND_URL}/${id}`)
+            .then((res) => {
+                if (res.data.errors) {
+                    console.log(res.data.errors);
+                    setShowError(true);
+                    setError(res.data.errors[0].message);
+                    setUsersLoading(false);
+                    return;
+                }
+
+                setUsers(users.filter((user) => user.id !== id));
+                window.Toast.fire({
+                    icon: "success",
+                    title: "User deleted successfully!",
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                setShowError(true);
+            });
+    };
 
     return (
-        <UserContext.Provider value={{
-            users, setUsers, deleteUser, addUser, editUser, loading, setLoading, showModal,
-            setShowModal, showEditModal, setShowEditModal,
-            usersLoading, error, setError, showError, setShowError,
-            user, setUser
-        }}>
+        <UserContext.Provider
+            value={{
+                users,
+                setUsers,
+                deleteUser,
+                addUser,
+                editUser,
+                loading,
+                setLoading,
+                showModal,
+                setShowModal,
+                showEditModal,
+                setShowEditModal,
+                usersLoading,
+                error,
+                setError,
+                showError,
+                setShowError,
+                user,
+                setUser,
+            }}
+        >
             {children}
         </UserContext.Provider>
     );
-}
+};
 
 export default UserContextProvider;
