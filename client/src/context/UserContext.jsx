@@ -78,8 +78,6 @@ const UserContextProvider = ({ children }) => {
                 setLoading(false);
                 setShowError(true);
             });
-
-        console.log('add user');
     }
 
     const editUser = async (e, user) => {
@@ -142,7 +140,6 @@ const UserContextProvider = ({ children }) => {
                 setShowError(true);
             });
 
-        console.log('edit user');
     }
 
     const deleteUser = (id) => {
@@ -157,7 +154,6 @@ const UserContextProvider = ({ children }) => {
             }
 
             setUsers(users.filter(user => user.id !== id));
-            console.log('delete user');
             window.Toast.fire({
                 icon: 'success',
                 title: 'User deleted successfully!'
