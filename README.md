@@ -112,7 +112,11 @@ The application allows you to perform the following operations:
 The changes made in the application will be reflected in the database.
 
 ## Screenshots
+<img width="1275" alt="Screen Shot 2023-06-11 at 02 25 00" src="https://github.com/misterneo/users-manager/assets/25622326/f32540af-88d1-42b1-9a1a-729fd98e5ac3">
 
+<img width="1275" alt="Screen Shot 2023-06-11 at 02 25 09" src="https://github.com/misterneo/users-manager/assets/25622326/a68a7f19-8834-4c5c-b3ba-a4f4cc2052af">
+
+<img width="1275" alt="Screen Shot 2023-06-11 at 02 25 41" src="https://github.com/misterneo/users-manager/assets/25622326/d050955b-1273-4ef5-acba-ece13688e09f">
 
 ## Contributing
 
