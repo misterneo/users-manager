@@ -221,6 +221,29 @@ button.close {
     color: #007bff;
 }
 
+.no-users {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    height: 400px;
+    width: 100%;
+    border: 2px dashed #ccc;
+    font-size: 1rem;
+    color: #007bff;
+}
+
+.no-users > p {
+    color: #000;
+    margin-top: 0;
+    font-size: .9rem;
+}
+
+.no-users > i {
+    font-size: 30px;
+    color: #ebac00;
+}
 
 .modal-overlay {
     position: fixed;

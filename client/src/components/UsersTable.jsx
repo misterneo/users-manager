@@ -12,13 +12,20 @@ export const UsersTable = () => {
             usersLoading ? <div className="loading-users">
                 <i className="fas fa-spinner fa-spin"></i>
             </div>
-                : <table id='users'>
+                : 
+                users.length === 0 ? 
+                <div className="no-users">
+                    <i className="fas fa-exclamation-triangle"></i>
+                    <p>No users found!</p>
+                </div>:
+                
+                <table id='users'>
                     <thead>
                         <tr>
                             <th>Username</th>
                             <th>Email</th>
                             <th>Created At</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
