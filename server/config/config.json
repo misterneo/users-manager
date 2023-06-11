@@ -1,0 +1,11 @@
+{
+    "development": {
+        "username": "root",
+        "password": "",
+        "database": "node_mysql",
+        "host": "localhost",
+        "dialect": "mysql",
+        "migrationStorage": "sequelize",
+        "migrationStorageTableName": "sequelize_meta"
+    }
+}
